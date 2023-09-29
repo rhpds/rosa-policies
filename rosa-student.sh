@@ -5,7 +5,8 @@ cat << EOF > ${POLICIES_DIR}/student-user-policy-iam.json
     "Statement": [ {
         "Effect": "Allow",
         "Action": [
-            "iam:List*"
+            "iam:List*",
+            "iam:Get*"
         ],
         "Resource": "*"
     } ]
