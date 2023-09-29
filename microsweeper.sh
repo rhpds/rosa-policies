@@ -1,5 +1,5 @@
 #!/bin/bash
-cat <<EOF > ${HOME}/trust-policy.json
+cat <<EOF > ${POLICIES_DIR}/trust-policy.json
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -21,8 +21,10 @@ EOF
 
 aws iam create-role \
   --role-name irsa-${GUID} \
-  --assume-role-policy-document file://${HOME}/trust-policy.json \
+  --assume-role-policy-document file://${POLICIES_DIR}/trust-policy.json \
   --description "IRSA Role (${GUID})"
+
+#rm ${POLICIES_DIR}/trust-policy.json
 
 aws iam attach-role-policy \
   --role-name irsa-${GUID} \
