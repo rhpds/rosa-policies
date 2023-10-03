@@ -48,5 +48,5 @@ aws iam create-role \
 
 aws iam attach-role-policy \
   --role-name irsa-${GUID} \
-  --policy-arn=arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
+  --policy-arn arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
 
