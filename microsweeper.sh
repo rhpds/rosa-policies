@@ -15,7 +15,7 @@ cat <<EOF > ${POLICIES_DIR}/CreateTablePolicy.json
 EOF
 
 aws iam create-policy --policy-name CreateTablePolicy --policy-document file://${POLICIES_DIR}/CreateTablePolicy.json
-aws iam attach-user-policy --user-name rosa-student --policy-arn arn:aws:iam::${AWS_ACCOUNT_ID}:policy/CreateTablePolicy
+aws iam attach-user-policy --user-name ${AWS_USER_NAME} --policy-arn arn:aws:iam::${AWS_ACCOUNT_ID}:policy/CreateTablePolicy
 # rm ${POLICIES_DIR}/CreateTablePolicy.json
 
 # Set up Service Account Permissions
