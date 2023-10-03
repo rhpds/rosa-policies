@@ -1,4 +1,24 @@
 #!/bin/bash
+# Set up User permissions to create a table
+
+cat <<EOF > ${POLICIES_DIR}/CreateTablePolicy.json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "dynamodb:CreateTable",
+            "Resource": "*"
+        }
+    ]
+}
+EOF
+
+aws iam create-policy --policy-name CreateTablePolicy --policy-document file://${POLICIES_DIR}/CreateTablePolicy.json
+aws iam attach-user-policy --user-name rosa-student --policy-arn arn:aws:iam::${AWS_ACCOUNT_ID}:policy/CreateTablePolicy
+# rm ${POLICIES_DIR}/CreateTablePolicy.json
+
+# Set up Service Account Permissions
 cat <<EOF > ${POLICIES_DIR}/trust-policy.json
 {
   "Version": "2012-10-17",
