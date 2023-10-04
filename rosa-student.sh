@@ -1,4 +1,15 @@
 #!/bin/bash
+# ---------------------------------------------------------
+# Set up permissions for student user
+#
+# Available variables passed from workload ocp4_workload_rosa_policies:
+# - POLICIES_DIR: Temporary directory for policy files
+# - GUID: Unique identifier of the environment
+# - AWS_USER_NAME: AWS user name for the student
+# - AWS_ACCOUNT_ID: AWS account id for the student
+# - OIDC_ENDPOINT: OIDC Endpoint
+# ---------------------------------------------------------
+
 cat << EOF > ${POLICIES_DIR}/student-user-policy-iam.json
 {
     "Version": "2012-10-17",
