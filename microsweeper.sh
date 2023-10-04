@@ -14,7 +14,7 @@
 # Set up User permissions to create a table
 # ---------------------------------------------------------
 
-cat <<EOF > ${POLICIES_DIR}/CreateTablePolicy.json
+cat <<EOF > ${POLICIES_DIR}/user-create-table-policy.json
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -27,14 +27,18 @@ cat <<EOF > ${POLICIES_DIR}/CreateTablePolicy.json
 }
 EOF
 
-aws iam create-policy --policy-name CreateTablePolicy --policy-document file://${POLICIES_DIR}/CreateTablePolicy.json
-aws iam attach-user-policy --user-name ${AWS_USER_NAME} --policy-arn arn:aws:iam::${AWS_ACCOUNT_ID}:policy/CreateTablePolicy
-# rm ${POLICIES_DIR}/CreateTablePolicy.json
+aws iam create-policy \
+  --policy-name UserCreateTablePolicy \
+  --policy-document file://${POLICIES_DIR}/user-create-table-policy.json
+
+aws iam attach-user-policy \
+  --user-name ${AWS_USER_NAME} \
+  --policy-arn arn:aws:iam::${AWS_ACCOUNT_ID}:policy/UserCreateTablePolicy
 
 # ---------------------------------------------------------
 # Set up Service Account Permissions
 # ---------------------------------------------------------
-cat <<EOF > ${POLICIES_DIR}/trust-policy.json
+cat <<EOF > ${POLICIES_DIR}/role-dynamodb-trust-policy.json
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -56,11 +60,16 @@ EOF
 
 aws iam create-role \
   --role-name irsa-${GUID} \
-  --assume-role-policy-document file://${POLICIES_DIR}/trust-policy.json \
+  --assume-role-policy-document file://${POLICIES_DIR}/role-dynamodb-trust-policy.json \
   --description "IRSA Role (${GUID})"
-
-#rm ${POLICIES_DIR}/trust-policy.json
 
 aws iam attach-role-policy \
   --role-name irsa-${GUID} \
   --policy-arn arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
+
+# ---------------------------------------------------------
+# Cleanup
+# ---------------------------------------------------------
+
+# rm ${POLICIES_DIR}/user-create-table-policy.json
+# rm ${POLICIES_DIR}/role-dynamodb-trust-policy.json

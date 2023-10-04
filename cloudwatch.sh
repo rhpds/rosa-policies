@@ -19,22 +19,26 @@ AWS_REGION=$(aws configure get region)
 # Set up User permissions to Describe Log Groups
 # ---------------------------------------------------------
 
-cat <<EOF > ${POLICIES_DIR}/DescribeLogGroupsPolicy.json
+cat <<EOF > ${POLICIES_DIR}/user-describe-log-groups-policy.json
 {
     "Version": "2012-10-17",
     "Statement": [
         {
             "Effect": "Allow",
             "Action": "logs:DescribeLogGroups",
-            "Resource": "arn:aws:logs:${AWS_REGION}:${AWS_ACCOUNT_ID}:log-group:*"
+            "Resource": "arn:aws:logs:${AWS_REGION}:${AWS_ACCOUNT_ID}:*"
         }
     ]
 }
 EOF
 
-aws iam create-policy --policy-name DescribeLogGroupsPolicy --policy-document file://${POLICIES_DIR}/DescribeLogGroupsPolicy.json
-aws iam attach-user-policy --user-name ${AWS_USER_NAME} --policy-arn arn:aws:iam::${AWS_ACCOUNT_ID}:policy/DescribeLogGroupsPolicy
-# rm ${POLICIES_DIR}/DescribeLogGroupsPolicy.json
+aws iam create-policy \
+  --policy-name UserDescribeLogGroupsPolicy \
+  --policy-document file://${POLICIES_DIR}/user-describe-log-groups-policy.json
+
+aws iam attach-user-policy \
+  --user-name ${AWS_USER_NAME} \
+  --policy-arn arn:aws:iam::${AWS_ACCOUNT_ID}:policy/UserDescribeLogGroupsPolicy
 
 # ---------------------------------------------------------
 # Set up Permissions for CloudWatch
@@ -63,13 +67,12 @@ EOF
 aws iam create-policy \
   --policy-name RosaCloudWatch-${GUID} \
   --policy-document file://${POLICIES_DIR}/cloudwatch-policy.json
-# rm ${POLICIES_DIR}/cloudwatch-policy.json
 
 # ---------------------------------------------------------
 # Set up Cloudwatch trust policy and role to use that policy
 # ---------------------------------------------------------
 
-cat <<EOF > ${POLICIES_DIR}/cloudwatch-trust-policy.json
+cat <<EOF > ${POLICIES_DIR}/role-cloudwatch-trust-policy.json
 {
   "Version": "2012-10-17",
   "Statement": [{
@@ -89,12 +92,18 @@ EOF
 
 aws iam create-role \
   --role-name RosaCloudWatch-${GUID} \
-  --assume-role-policy-document file://${POLICIES_DIR}/cloudwatch-trust-policy.json \
+  --assume-role-policy-document file://${POLICIES_DIR}/role-cloudwatch-trust-policy.json \
   --description "Cloud Watch Role (${GUID})" \
   --tags "Key=rosa-workshop,Value=true"
-
-#rm ${POLICIES_DIR}/cloudwatch-trust-policy.json
 
 aws iam attach-role-policy \
   --role-name RosaCloudWatch-${GUID} \
   --policy-arn arn:aws:iam::${AWS_ACCOUNT_ID}:policy/RosaCloudWatch-${GUID}
+
+# ---------------------------------------------------------
+# Cleanup
+# ---------------------------------------------------------
+
+# rm ${POLICIES_DIR}/user-describe-log-groups-policy.json
+# rm ${POLICIES_DIR}/cloudwatch-policy.json
+# rm ${POLICIES_DIR}/role-cloudwatch-trust-policy.json
