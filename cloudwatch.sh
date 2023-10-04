@@ -11,6 +11,32 @@
 # ---------------------------------------------------------
 
 # ---------------------------------------------------------
+# Get current AWS region
+# ---------------------------------------------------------
+AWS_REGION=$(aws configure get region)
+
+# ---------------------------------------------------------
+# Set up User permissions to Describe Log Groups
+# ---------------------------------------------------------
+
+cat <<EOF > ${POLICIES_DIR}/DescribeLogGroupsPolicy.json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "logs:DescribeLogGroups",
+            "Resource": "arn:aws:logs:${AWS_REGION}:${AWS_ACCOUNT_ID}:log-group:*"
+        }
+    ]
+}
+EOF
+
+aws iam create-policy --policy-name DescribeLogGroupsPolicy --policy-document file://${POLICIES_DIR}/DescribeLogGroupsPolicy.json
+aws iam attach-user-policy --user-name ${AWS_USER_NAME} --policy-arn arn:aws:iam::${AWS_ACCOUNT_ID}:policy/DescribeLogGroupsPolicy
+# rm ${POLICIES_DIR}/DescribeLogGroupsPolicy.json
+
+# ---------------------------------------------------------
 # Set up Permissions for CloudWatch
 # ---------------------------------------------------------
 
