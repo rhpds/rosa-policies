@@ -37,7 +37,7 @@ done
 
 # Set up .bashrc
 cat <<EOF >> ${USER_HOME}/.bashrc
-readonly PATH=${HOME}/bin
+readonly PATH=${USER_HOME}/bin
 export PATH
 EOF
 
