@@ -45,6 +45,7 @@ readonly PATH=${USER_HOME}/bin
 export PATH
 EOF
 
+chown rosa:users ${USER_HOME}/.bashrc
 # Make .bashrc immutable
 chattr +i ${USER_HOME}/.bashrc
 
