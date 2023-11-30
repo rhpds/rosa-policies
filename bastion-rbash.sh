@@ -36,7 +36,11 @@ for command in "${local_bin_commands[@]}"; do
 done
 
 # Set up .bashrc
-cat <<EOF >> ${USER_HOME}/.bashrc
+cat <<EOF > ${USER_HOME}/.bashrc
+# .bashrc
+
+export GUID=${GUID}
+
 readonly PATH=${USER_HOME}/bin
 export PATH
 EOF
@@ -92,3 +96,5 @@ spec:
           defaultMode: 420
           name: microsweeper
 EOF
+
+chown -R rosa:users ${USER_HOME}
