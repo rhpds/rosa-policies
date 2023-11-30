@@ -97,4 +97,4 @@ spec:
           name: microsweeper
 EOF
 
-chown -R rosa:users ${USER_HOME}
+chown -R rosa:users ${USER_HOME}/*
