@@ -13,6 +13,9 @@
 USER_HOME=/home/rosa
 AWS_REGION=$(/usr/local/bin/aws configure get region)
 
+# Remove sshd config file preventing login with password
+rm -f /etc/ssh/sshd_config.d/50-cloud-init.conf
+
 # Setup rbash
 cp /bin/bash /bin/rbash
 
