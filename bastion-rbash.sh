@@ -49,56 +49,7 @@ export PATH
 EOF
 
 chown rosa:users ${USER_HOME}/.bashrc
+chown -R rosa:users ${USER_HOME}/*
+
 # Make .bashrc immutable
 chattr +i ${USER_HOME}/.bashrc
-
-# Create files for labs
-cat <<EOF > ${USER_HOME}/application.properties
-# AWS DynamoDB configurations
-dynamodb.table=microsweeper-scores-${GUID}
-dynamodb.aws.credentials.type=default
-
-# OpenShift configurations
-openshift.service-account=microsweeper
-kubernetes-client.trust-certs=true
-EOF
-
-cat <<EOF > ${USER_HOME}/deployment.yaml
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: microsweeper-appservice
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      deployment: microsweeper-appservice
-  template:
-    metadata:
-      labels:
-        deployment: microsweeper-appservice
-    spec:
-      containers:
-      - name: microsweeper-appservice
-        serviceAccountName: microsweeper
-        env:
-        - name: AWS_REGION
-          value: ${AWS_REGION}
-        image: quay.io/rhpds/microsweeper:1.0.0
-        imagePullPolicy: IfNotPresent        
-        ports:
-        - containerPort: 8080
-          protocol: TCP
-        volumeMounts:
-        - mountPath: /deployments/app/application.properties
-          name: application-properties
-          subPath: application.properties
-      volumes:
-      - name: application-properties
-        configMap:
-          defaultMode: 420
-          name: microsweeper
-EOF
-
-chown -R rosa:users ${USER_HOME}/*
