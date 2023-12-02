@@ -27,7 +27,7 @@ chmod 0700 ${USER_HOME}/bin
 usermod -s /bin/rbash rosa
 
 # All commands that rosa user should have from /usr/bin
-bin_commands=('watch' 'date' 'clear' 'cat' 'echo' 'jq' 'awk' 'grep' 'base64' 'less' 'nslookup' 'head' 'ab' 'curl' 'sleep')
+bin_commands=('watch' 'date' 'clear' 'cat' 'echo' 'jq' 'cut' 'grep' 'base64' 'less' 'nslookup' 'head' 'ab' 'curl' 'sleep')
 for command in "${bin_commands[@]}"; do
   ln -sf /usr/bin/${command} ${USER_HOME}/bin/${command}
 done
